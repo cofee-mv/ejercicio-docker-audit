@@ -1,18 +1,65 @@
 services:
-  app:
-    build: .
-    container_name: technova-api
+  nginx-proxy-manager:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: proxy-manager
+    restart: always
     ports:
-      - "5050:5050"
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./npm_data:/data
+      - ./npm_letsencrypt:/etc/letsencrypt
+
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: uptime-kuma
+    restart: always
+    expose:
+      - "3001"
+    volumes:
+      - uptime-kuma-data:/app/data
+
+  dozzle:
+    image: amir20/dozzle:latest
+    container_name: dozzle
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    expose:
+      - "8080"
+
+  db:
+    image: mysql:8.0
+    container_name: servidor-bd
+    restart: always
     environment:
-      - DB_HOST=${DB_HOST:-localhost}
-      - DB_USER=${DB_USER:-root}
-      - DB_PASS=${DB_PASS}
-      - DB_NAME=${DB_NAME:-legacydb}
-    restart: unless-stopped
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASS}
+    volumes:
+      - mysql-data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5050/health')"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app-backend:
+    build: .
+    container_name: backend
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    expose:
+      - "5050"
+    environment:
+      - DB_HOST=db
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - DB_NAME=${DB_NAME}
+
+volumes:
+  mysql-data:
+  uptime-kuma-data:
