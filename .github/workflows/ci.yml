@@ -30,7 +30,7 @@ jobs:
         run: python -m pytest test_app.py -v
 
       - name: Ejecutar Bandit
-        run: python -m bandit -r . -f txt -l
+        run: python -m bandit -r . -f txt -lll
 
   docker-scan:
     name: Escaneo de Vulnerabilidades Docker
