@@ -10,6 +10,8 @@ services:
     volumes:
       - ./npm_data:/data
       - ./npm_letsencrypt:/etc/letsencrypt
+    networks:
+      - red-ejemplo
 
   uptime-kuma:
     image: louislam/uptime-kuma:1
@@ -19,6 +21,8 @@ services:
       - "3001"
     volumes:
       - uptime-kuma-data:/app/data
+    networks:
+      - red-ejemplo
 
   dozzle:
     image: amir20/dozzle:latest
@@ -28,6 +32,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     expose:
       - "8080"
+    networks:
+      - red-ejemplo
 
   db:
     image: mysql:8.0
@@ -45,6 +51,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - red-ejemplo
 
   app-backend:
     build: .
@@ -60,7 +68,13 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASS=${DB_PASS}
       - DB_NAME=${DB_NAME}
+    networks:
+      - red-ejemplo
 
 volumes:
   mysql-data:
   uptime-kuma-data:
+
+networks:
+  red-ejemplo:
+    name: red-ejemplo
