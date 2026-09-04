@@ -5,6 +5,7 @@ services:
     restart: always
     ports:
       - "80:80"
+      - "81:81"
       - "443:443"
     volumes:
       - ./npm_data:/data
