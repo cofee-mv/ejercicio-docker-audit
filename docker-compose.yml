@@ -1,0 +1,18 @@
+services:
+  app:
+    build: .
+    container_name: technova-api
+    ports:
+      - "5050:5050"
+    environment:
+      - DB_HOST=${DB_HOST:-localhost}
+      - DB_USER=${DB_USER:-root}
+      - DB_PASS=${DB_PASS}
+      - DB_NAME=${DB_NAME:-legacydb}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5050/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
