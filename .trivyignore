@@ -1,1 +1,6 @@
 # Ignorar vulnerabilidades conocidas que no aplican
+
+# CVE-2026-23949: jaraco.context Path traversal via malicious tar archives
+# CVE-2026-24049: wheel Privilege Escalation or Arbitrary Code Execution
+CVE-2026-23949
+CVE-2026-24049
