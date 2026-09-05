@@ -48,3 +48,29 @@ jobs:
           severity: 'CRITICAL,HIGH'
           exit-code: '1'
         continue-on-error: false
+
+  deploy:
+    name: Despliegue en EC2
+    needs: [test, docker-scan]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Desplegar en EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            cd ~/ejercicio-docker-audit
+            git pull origin main
+            sudo docker compose down
+            sudo docker compose build --no-cache app-backend
+            sudo docker compose up -d
+            sudo docker system prune -f
+            echo "Deploy completado"
