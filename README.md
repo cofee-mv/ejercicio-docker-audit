@@ -21,6 +21,7 @@ Proyecto de auditoría, refactorización y despliegue de una aplicación Flask e
 | [api890.duckdns.org](https://api890.duckdns.org) | Backend / API (Flask) | Público |
 | [dozzle987.duckdns.org](https://dozzle987.duckdns.org) | Dozzle (logs Docker) | Público |
 | [kumma90.duckdns.org](https://kumma90.duckdns.org) | Uptime Kuma (monitoreo) | Público |
+| [manager67.duckdns.org](https://manager67.duckdns.org) | Nginx Proxy Manager (admin) | Público |
 
 > Los subdominios apuntan a la IP pública de la instancia EC2: `3.141.8.126`
 
@@ -45,6 +46,7 @@ Proyecto de auditoría, refactorización y despliegue de una aplicación Flask e
               ▼
           MySQL:3306
 ```
+> Además: `manager67.duckdns.org` → Nginx Proxy Manager (admin, puerto 81)
 
 ### Puertos expuestos
 
