@@ -40,6 +40,18 @@ jobs:
       - name: Checkout del repositorio
         uses: actions/checkout@v4
 
+      - name: Construir imagen Docker
+        run: docker build -t tecnova-web:ci .
+
+      - name: Ejecutar Trivy (escaneo de imagen Docker)
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: tecnova-web:ci
+          format: table
+          exit-code: '1'
+          ignore-unfixed: true
+          severity: HIGH,CRITICAL
+
       - name: Ejecutar Trivy (escaneo de archivos)
         uses: aquasecurity/trivy-action@master
         with:
